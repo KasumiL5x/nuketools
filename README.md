@@ -2,16 +2,16 @@
 nuketools is a collection of various tools I written at university for a 2d compositing module.  Everybody else in class was sticking to traditional compositing for their projects, so I decided to employ more technically-focused work instead.
 
 # bumpy
-Generates a normal map from an input image.
+Converts an input image into a normal map with options for different algorithms, normalization, etc.
 
 # check
-Generates a checkerboard (code derived from an image editor).
+Generates a checkerboard mask.
 
 # fractal
-Generates fractal masks.
+Generates masks from various fractals with detailed control over each fractal.
 
 # gradient
-Generates a radial gradient mask with a position and curve for falloff.
+Generates a radial gradient mask based on a custom user-provided curve and position.
 
 # kirei
-A cluster of various image effects.
+Various image filters, such as temperature grading, channel mixing, vignette, and many more.
