@@ -34,9 +34,13 @@ class MultiRender():
 
 		# ensure that the path exists
 		root_path = self.__panel.value('Output path')
-		if not os.path.isdir(root_path):
-			print 'Warning: Path is not valid.'
-			return
+		if not os.path.exists(root_path):
+			try:
+				os.makedirs(root_path)
+			except Exception, e:
+				print 'Warning: Tried to create path but failed.'
+				print e
+				return
 		#end
 
 		# ensure the path has a trailing slash
