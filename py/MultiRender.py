@@ -13,7 +13,7 @@ class MultiRender():
 		self.__panel.addFilenameSearch('Output path', '')
 		self.__panel.addEnumerationPulldown('Format', 'jpg png')
 		self.__panel.addSingleLineInput('Frame', nuke.frame())
-		self.__panel.addBooleanCheckBox('Use Proxy', False)
+		self.__panel.addBooleanCheckBox('Use Proxy', nuke.root().proxy())
 		self.__panel.addButton('Cancel')
 		self.__panel.addButton('Render')
 		self.__dialog_result = self.__panel.show()
@@ -53,7 +53,7 @@ class MultiRender():
 		# create and configure a write node for each selected node
 		iteration = 0
 		write_nodes = []
-		for curr_node in reverse(nuke.selectedNodes()):
+		for curr_node in reversed(nuke.selectedNodes()):
 			write_node = nuke.nodes.Write(inputs=[curr_node])
 			write_node['file_type'].setValue(file_format)
 			write_node['file'].setValue(root_path + str(iteration) + '_' + curr_node.fullName() + '.' + file_format)
