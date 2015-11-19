@@ -13,6 +13,7 @@ class MultiRender():
 		self.__panel.addFilenameSearch('Output path', '')
 		self.__panel.addEnumerationPulldown('Format', 'jpg png')
 		self.__panel.addSingleLineInput('Frame', nuke.frame())
+		self.__panel.addBooleanCheckBox('Use Proxy', False)
 		self.__panel.addButton('Cancel')
 		self.__panel.addButton('Render')
 		self.__dialog_result = self.__panel.show()
@@ -43,6 +44,9 @@ class MultiRender():
 			root_path += '/'
 		#end
 
+		# set root configuration to match proxy
+		nuke.root().setProxy(self.__panel.value('Use Proxy'))
+
 		# get the file format
 		file_format = self.__panel.value('Format')
 
@@ -53,6 +57,7 @@ class MultiRender():
 			write_node = nuke.nodes.Write(inputs=[curr_node])
 			write_node['file_type'].setValue(file_format)
 			write_node['file'].setValue(root_path + str(iteration) + '_' + curr_node.fullName() + '.' + file_format)
+			write_node['proxy'].setValue(write_node['file'].getValue())
 			write_nodes.append(write_node)
 			iteration += 1
 		#end
