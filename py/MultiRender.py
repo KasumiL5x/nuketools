@@ -53,7 +53,7 @@ class MultiRender():
 		# create and configure a write node for each selected node
 		iteration = 0
 		write_nodes = []
-		for curr_node in nuke.selectedNodes():
+		for curr_node in reverse(nuke.selectedNodes()):
 			write_node = nuke.nodes.Write(inputs=[curr_node])
 			write_node['file_type'].setValue(file_format)
 			write_node['file'].setValue(root_path + str(iteration) + '_' + curr_node.fullName() + '.' + file_format)
