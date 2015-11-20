@@ -71,27 +71,29 @@ class MultiRender():
 
 		# create and configure a write node for each selected node
 		iteration = 0
-		write_nodes = [] # [[Write, iteration, node name],...]
+		write_nodes = []
 		for curr_node in reversed(nuke.selectedNodes()):
 			write_node = nuke.nodes.Write(inputs=[curr_node])
 			write_node['file_type'].setValue(file_format)
-			write_node['file'].setValue(root_path + str(iteration) + '_' + curr_node.fullName() + '.' + file_format)
-			write_node['proxy'].setValue(write_node['file'].getValue())
-			write_nodes.append([write_node, str(iteration), curr_node.fullName()])
+			new_node = {
+				'node': write_node,
+				'iteration': iteration,
+				'name': curr_node.fullName()
+			}
+			write_nodes.append(new_node)
 			iteration += 1
 		#end
 
 		# execute all of the write nodes and delete them
-		
 		for curr_node in write_nodes:
-			# write all requested frames
+			node = curr_node['node']
 			for curr_frame in range(start_frame, end_frame+1):
-				curr_node[0]['file'].setValue(root_path + str(curr_frame) + '-' + curr_node[1] + '-' + curr_node[2] + '.' + file_format)
-				curr_node[0]['proxy'].setValue(curr_node[0]['file'].getValue())
-				nuke.execute(curr_node[0], curr_frame, curr_frame, 1) # cannot render ranges?
+				file_name = '%s%03d.%02d.%s.%s' % (root_path, curr_frame, curr_node['iteration'], curr_node['name'], file_format)
+				node['file'].setValue(file_name)
+				node['proxy'].setValue(node['file'].getValue())
+				nuke.execute(node, curr_frame, curr_frame, 1)
 			#end
-			nuke.delete(curr_node[0])
-			
+			nuke.delete(node)
 		#end
 	#end
 #end
