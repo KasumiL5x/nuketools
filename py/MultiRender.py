@@ -14,6 +14,7 @@ class MultiRender():
 		self.__panel.addEnumerationPulldown('Format', 'jpg png')
 		self.__panel.addSingleLineInput('Start Frame', nuke.frame())
 		self.__panel.addSingleLineInput('End Frame', nuke.frame())
+		self.__panel.addSingleLineInput('Channels', 'rgba')
 		self.__panel.addBooleanCheckBox('Use Proxy', nuke.root().proxy())
 		self.__panel.addButton('Cancel')
 		self.__panel.addButton('Render')
@@ -75,6 +76,7 @@ class MultiRender():
 		for curr_node in reversed(nuke.selectedNodes()):
 			write_node = nuke.nodes.Write(inputs=[curr_node])
 			write_node['file_type'].setValue(file_format)
+			write_node['channels'].setValue(self.__panel.value('Channels'))
 			new_node = {
 				'node': write_node,
 				'iteration': iteration,
