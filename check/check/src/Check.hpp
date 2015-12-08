@@ -23,6 +23,9 @@ private:
 	float _scaleY;
 	float _fuzzy;
 	float _angle;
+	float _offsetX;
+	float _offsetY;
+	float _rotationCenter[2];
 };
 
 #endif /* __gradient__ */
