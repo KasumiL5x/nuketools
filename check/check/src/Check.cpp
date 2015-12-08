@@ -50,18 +50,18 @@ template<typename T>
 	}
 
 	float smoothPulse( float a1, float a2, float b1, float b2, float x ) {
-		if ((x < a1) || (x >= b2)) {
-			return 0.0F;
+		if( x < a1 || x >= b2 ) {
+			return 0.0f;
 		}
-		if (x >= a2) {
-			if (x < b1) {
-				return 1.0F;
+		if( x >= a2 ) {
+			if( x < b1 ) {
+				return 1.0f;
 			}
 			x = (x - b1) / (b2 - b1);
-			return 1.0F - x * x * (3.0F - 2.0F * x);
+			return 1.0f - (x*x * (3.0f - 2.0f * x));
 		}
 		x = (x - a1) / (a2 - a1);
-		return x * x * (3.0F - 2.0F * x);
+		return x*x * (3.0f - 2.0f * x);
 	}
 }
 
@@ -86,9 +86,6 @@ Check::Check( Node* node )
 	_offsetY = 0.0f;
 	_rotationCenter[0] = 0.0f;
 	_rotationCenter[1] = 0.0f;
-	//
-	//_debugFloat1 = -1024.0f;
-	//_debugFloat2 = -778.0f;
 }
 
 Check::~Check() {
@@ -103,7 +100,7 @@ void Check::knobs( DD::Image::Knob_Callback f ) {
 	DD::Image::Float_knob(f, &_scaleX, "scalex", "Scale X");
 	DD::Image::Float_knob(f, &_scaleY, "scaley", "Scale Y");
 	DD::Image::Float_knob(f, &_fuzzy, "fuzzy", "Fuzzy");
-	DD::Image::Float_knob(f, &_angle, "rotation", "Rotation");
+	DD::Image::Float_knob(f, &_angle, "rotation", "Rotation (degrees)");
 	DD::Image::XY_knob(f, &_rotationCenter[0], "rotationpivot", "Rotation Pivot");
 
 	// outputs
@@ -118,8 +115,9 @@ bool Check::draw_engine( int y, int x, int r, float* buffer ) {
 	const float rotationCenterX = -_rotationCenter[0];
 	const float rotationCenterY = -_rotationCenter[1];
 
-	const float c = cosf(_angle);
-	const float s = sinf(_angle);
+	const float DEG_TO_RAD = 0.0174532924f;
+	const float c = cosf(_angle * DEG_TO_RAD);
+	const float s = sinf(_angle * DEG_TO_RAD);
 	const float m00 = c;
 	const float m01 = s;
 	const float m10 = -s;
@@ -131,8 +129,10 @@ bool Check::draw_engine( int y, int x, int r, float* buffer ) {
 		float f = (int)(nx + _offsetX + 100000.0f) % 2 != (int)(ny + _offsetY + 100000.0f) % 2 ? 1.0f : 0.0f;
 		if( _fuzzy != 0 ) {
 			const float fuzz = _fuzzy / 100.0f;
-			const float fx = ccmath::smoothPulse(0.0f, fuzz, 1.0f - fuzz, 1.0f, fmodf(nx + _offsetX, 1.0f));
-			const float fy = ccmath::smoothPulse(0.0f, fuzz, 1.0f - fuzz, 1.0f, fmodf(ny + _offsetY, 1.0f));
+			const float fx = ccmath::smoothPulse(0.0f, fuzz, 1.0f - fuzz, 1.0f, fmodf((nx + _offsetX + 100000.0f), 1.0f));
+			const float fy = ccmath::smoothPulse(0.0f, fuzz, 1.0f - fuzz, 1.0f, fmodf((ny + _offsetY + 100000.0f), 1.0f));
+			//const float fx = ccmath::smoothstep(0.0f, 1.0f-fuzz, fmodf(nx + _offsetX, 1.0f));
+			//const float fy = ccmath::smoothstep(0.0f, 1.0f-fuzz, fmodf(ny + _offsetY, 1.0f));
 			f *= fx * fy;
 		}
 		const float newColor = ccmath::lerp<float>(0.0f, 1.0f, f);
